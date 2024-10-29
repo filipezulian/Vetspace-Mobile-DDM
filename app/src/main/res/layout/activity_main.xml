@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/main"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#E0FFE8"
+tools:context=".MainActivity">
+
+
+<ImageView
+android:id="@+id/pawImage"
+android:layout_width="100dp"
+android:layout_height="100dp"
+android:layout_marginTop="50dp"
+android:src="@drawable/paw"
+android:contentDescription="Paw Icon"
+app:layout_constraintTop_toTopOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent" />
+
+
+<Button
+android:id="@+id/loginButton"
+android:layout_width="200dp"
+android:layout_height="60dp"
+android:layout_marginTop="364dp"
+android:backgroundTint="#87B99F"
+android:elevation="8dp"
+android:fontFamily="sans-serif-medium"
+android:text="LOGIN"
+android:textAllCaps="true"
+android:textColor="@android:color/white"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="0.497"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toBottomOf="@id/pawImage" />
+
+<TextView
+    android:id="@+id/registerText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="30dp"
+    android:text="@string/register_text"
+    android:textColor="#808080"
+    android:textSize="14sp"
+    android:fontFamily="sans-serif"
+    android:clickable="true"
+    android:focusable="true"
+    android:textColorLink="@android:color/holo_blue_light"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
