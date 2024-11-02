@@ -13,6 +13,12 @@
         android:theme="@style/Theme.DDM_Vetspace"
         tools:targetApi="31">
         <activity
+            android:name=".AddPet"
+            android:exported="false" />
+        <activity
+            android:name=".adicionarPet"
+            android:exported="false" />
+        <activity
             android:name=".Cadastro"
             android:exported="false" />
         <activity
