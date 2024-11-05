@@ -27,6 +27,16 @@
         android:scaleType="centerInside"
         android:src="@drawable/cat" />
 
+    <Button
+        android:id="@+id/buttonChooseImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Escolher imagem do pet"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#A8CDB0"/>
+
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
