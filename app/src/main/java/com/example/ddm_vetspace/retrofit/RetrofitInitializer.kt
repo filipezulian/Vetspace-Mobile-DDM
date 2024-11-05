@@ -1,6 +1,7 @@
 package com.example.ddm_vetspace.retrofit
 
 import com.example.ddm_vetspace.interfaces.blogService
+import com.example.ddm_vetspace.interfaces.petService
 import com.example.ddm_vetspace.interfaces.usuarioService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,4 +18,5 @@ object RetrofitInitializer {
 
     val usuarioApi: usuarioService = retrofit.create(usuarioService::class.java)
     val blogApi: blogService =  retrofit.create(blogService::class.java)
+    val petApi: petService =  retrofit.create(petService::class.java)
 }
