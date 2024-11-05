@@ -1,4 +1,4 @@
-package com.example.ddm_vetspace.interfaces
+package com.example.ddm_vetspace.services
 
 import com.example.ddm_vetspace.dto.CadastroRequest
 import com.example.ddm_vetspace.dto.LoginRequest

@@ -1,4 +1,4 @@
-package com.example.ddm_vetspace
+package com.example.ddm_vetspace.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,26 +8,28 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ddm_vetspace.R
 import com.example.ddm_vetspace.model.Blog
 import com.example.ddm_vetspace.repository.BlogRepository
 import com.example.ddm_vetspace.retrofit.RetrofitInitializer
-import kotlinx.coroutines.launch
+import com.example.ddm_vetspace.viewmodel.BlogViewModel
+import com.example.ddm_vetspace.viewmodel.BlogViewModelFactory
 
 class Blogs : AppCompatActivity() {
 
-    private lateinit var repository: BlogRepository
+    private val blogViewModel: BlogViewModel by viewModels {
+        BlogViewModelFactory(BlogRepository(RetrofitInitializer.blogApi))
+    }
     private lateinit var blogAdapter: BlogAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_blogs)
-
-        // Inicializando o repositório com o Retrofit
-        repository = BlogRepository(RetrofitInitializer.blogApi)
 
         val recyclerViewBlogs = findViewById<RecyclerView>(R.id.recyclerViewBlogs)
         recyclerViewBlogs.layoutManager = LinearLayoutManager(this)
@@ -39,19 +41,18 @@ class Blogs : AppCompatActivity() {
             val intent = Intent(this, adicionarPet::class.java)
             startActivity(intent)
         }
-        // Carregar blogs da API
-        loadBlogs()
-    }
 
-    private fun loadBlogs() {
-        lifecycleScope.launch {
-            val result = repository.getBlogs()
-            result.onSuccess { blogs ->
-                blogAdapter.updateData(blogs)
-            }.onFailure {
-                Toast.makeText(this@Blogs, "Erro ao carregar blogs: ${it.message}", Toast.LENGTH_LONG).show()
-            }
-        }
+        // Observe data from ViewModel
+        blogViewModel.blogs.observe(this, Observer { blogs ->
+            blogAdapter.updateData(blogs)
+        })
+
+        blogViewModel.error.observe(this, Observer { errorMessage ->
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        })
+
+        // Load blogs via ViewModel
+        blogViewModel.loadBlogs()
     }
 }
 
@@ -73,6 +74,7 @@ class BlogAdapter(private var blogList: List<Blog>) : RecyclerView.Adapter<BlogA
 
     fun updateData(newBlogList: List<Blog>) {
         blogList = newBlogList
+        notifyDataSetChanged()
     }
 
     class BlogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

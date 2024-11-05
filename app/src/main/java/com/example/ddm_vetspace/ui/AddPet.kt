@@ -1,4 +1,4 @@
-package com.example.ddm_vetspace
+package com.example.ddm_vetspace.ui
 
 import android.Manifest
 import android.content.ContentValues
@@ -18,15 +18,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.ddm_vetspace.R
 import com.example.ddm_vetspace.model.Pet
 import com.example.ddm_vetspace.repository.PetRepository
 import com.example.ddm_vetspace.retrofit.RetrofitInitializer
 import kotlinx.coroutines.launch
 import java.io.File
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class AddPet : AppCompatActivity() {
 

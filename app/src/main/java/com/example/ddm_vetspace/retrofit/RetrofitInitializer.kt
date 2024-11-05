@@ -1,8 +1,8 @@
 package com.example.ddm_vetspace.retrofit
 
-import com.example.ddm_vetspace.interfaces.blogService
-import com.example.ddm_vetspace.interfaces.petService
-import com.example.ddm_vetspace.interfaces.usuarioService
+import com.example.ddm_vetspace.services.blogService
+import com.example.ddm_vetspace.services.petService
+import com.example.ddm_vetspace.services.usuarioService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

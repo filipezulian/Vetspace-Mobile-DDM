@@ -1,6 +1,6 @@
 package com.example.ddm_vetspace.repository
 
-import com.example.ddm_vetspace.interfaces.blogService
+import com.example.ddm_vetspace.services.blogService
 import com.example.ddm_vetspace.model.Blog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

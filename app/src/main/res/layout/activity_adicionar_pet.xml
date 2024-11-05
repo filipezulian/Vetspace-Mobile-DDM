@@ -30,17 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"/>
-
-        <Button
-            android:id="@+id/buttonAddPet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ADD"
-            android:padding="12dp"
-            android:backgroundTint="#DFFFE1"
-            android:textColor="#000000"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginBottom="24dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -57,9 +46,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="Menu Icon"
+            android:contentDescription="Blogs Icon"
             android:padding="16dp"
             android:src="@drawable/menu" />
+
+        <ImageView
+            android:id="@+id/buttonAddPet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="Add Icon"
+            android:padding="16dp"
+            android:src="@drawable/add" />
 
         <ImageView
             android:id="@+id/buttonPets"

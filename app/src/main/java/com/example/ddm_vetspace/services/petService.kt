@@ -1,4 +1,4 @@
-package com.example.ddm_vetspace.interfaces
+package com.example.ddm_vetspace.services
 
 import com.example.ddm_vetspace.dto.PetResponse
 import com.example.ddm_vetspace.model.Pet

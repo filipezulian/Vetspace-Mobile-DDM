@@ -34,23 +34,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DDM_Vetspace">
         <activity
-            android:name=".Blogs"
+            android:name=".ui.Blogs"
             android:exported="true" />
         <activity
-            android:name=".AddPet"
+            android:name=".ui.AddPet"
             android:exported="true" />
         <activity
-            android:name=".adicionarPet"
+            android:name=".ui.adicionarPet"
             android:exported="true">
         </activity>
         <activity
-            android:name=".Cadastro"
+            android:name=".ui.Cadastro"
             android:exported="true" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".ui.HomeActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,7 +1,7 @@
 package com.example.ddm_vetspace.repository
 
 import com.example.ddm_vetspace.dto.PetResponse
-import com.example.ddm_vetspace.interfaces.petService
+import com.example.ddm_vetspace.services.petService
 import com.example.ddm_vetspace.model.Pet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
