@@ -1,5 +1,6 @@
 package com.example.ddm_vetspace
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -50,14 +51,15 @@ class HomeActivity : AppCompatActivity() {
     private fun realizarLogin(loginRequest: LoginRequest) {
         val call = RetrofitInitializer.usuarioApi.autenticar(loginRequest)
 
-        // Executa a chamada de forma assíncrona
+        // Executa a chamada de login de forma assíncrona
         call.enqueue(object : Callback<Usuario> {
             override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
                 if (response.isSuccessful) {
                     val usuario = response.body()
-                    Toast.makeText(this@HomeActivity, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@HomeActivity, Blogs::class.java)
-                    startActivity(intent)
+                    if (usuario != null) {
+                        // Agora buscamos o usuário pelo email para obter o ID
+                        buscarIdUsuarioPorEmail(usuario.email)
+                    }
                 } else {
                     Toast.makeText(this@HomeActivity, "Erro no login. Verifique as credenciais.", Toast.LENGTH_SHORT).show()
                 }
@@ -69,6 +71,39 @@ class HomeActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun buscarIdUsuarioPorEmail(email: String) {
+        val call = RetrofitInitializer.usuarioApi.buscarUsuarioPorEmail(email)
+
+        // Executa a chamada para obter o usuário pelo email
+        call.enqueue(object : Callback<Usuario> {
+            override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
+                if (response.isSuccessful) {
+                    val usuario = response.body()
+                    if (usuario != null) {
+                        Log.d("HomeActivity", "ID do usuário recebido: ${usuario.user_id}")
+                        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                        sharedPreferences.edit()
+                            .putInt("user_id", usuario.user_id) // Salva o ID do usuário nas SharedPreferences
+                            .apply()
+                        Toast.makeText(this@HomeActivity, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@HomeActivity, Blogs::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                } else {
+                    Toast.makeText(this@HomeActivity, "Erro ao buscar ID do usuário.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Usuario>, t: Throwable) {
+                Toast.makeText(this@HomeActivity, "Falha na conexão: ${t.message}", Toast.LENGTH_LONG).show()
+                Log.e("HomeActivity", "Erro: ${t.message}")
+            }
+        })
+    }
+
+
 
     private fun hashSenha(senha: String): String {
         val digest = MessageDigest.getInstance("SHA-256")

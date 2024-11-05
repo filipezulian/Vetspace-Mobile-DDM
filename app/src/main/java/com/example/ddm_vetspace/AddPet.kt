@@ -2,6 +2,7 @@ package com.example.ddm_vetspace
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -16,7 +17,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
+import com.example.ddm_vetspace.model.Pet
+import com.example.ddm_vetspace.repository.PetRepository
+import com.example.ddm_vetspace.retrofit.RetrofitInitializer
+import kotlinx.coroutines.launch
 import java.io.File
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class AddPet : AppCompatActivity() {
 
@@ -25,8 +35,12 @@ class AddPet : AppCompatActivity() {
     private lateinit var requestCameraPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var requestWritePermissionLauncher: ActivityResultLauncher<String>
     private var photoUri: Uri? = null
+    private lateinit var repository: PetRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        repository = PetRepository(RetrofitInitializer.petApi)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pet)
 
@@ -34,6 +48,12 @@ class AddPet : AppCompatActivity() {
         backButton.setOnClickListener {
             val intent = Intent(this, adicionarPet::class.java)
             startActivity(intent)
+        }
+
+        // Configuração do botão adicionar
+        val buttonAdd = findViewById<Button>(R.id.buttonAdd)
+        buttonAdd.setOnClickListener {
+            cadastrarPet()
         }
 
         setupSpinners()
@@ -159,4 +179,68 @@ class AddPet : AppCompatActivity() {
             }
         }
     }
+
+    private fun cadastrarPet() {
+        val nameEditText = findViewById<EditText>(R.id.editTextName)
+        val birthDateEditText = findViewById<EditText>(R.id.editTextBirthDate)
+        val genderSpinner = findViewById<Spinner>(R.id.spinnerGender)
+        val typeSpinner = findViewById<Spinner>(R.id.spinnerType)
+
+        val nome = nameEditText.text.toString()
+        val nascimentoStr = birthDateEditText.text.toString()
+        val tipo = typeSpinner.selectedItem.toString()
+        val sexo = genderSpinner.selectedItem.toString() == "Masculino"
+        val tipoPet = if (tipo == "Cachorro") 0 else 1
+
+        // Converter a data para o formato yyyy-MM-dd
+        val nascimento = try {
+            LocalDate.parse(nascimentoStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Data de nascimento inválida", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("user_id", -1)
+
+        if (userId == -1) {
+            Toast.makeText(
+                this,
+                "Usuário não encontrado. Faça login novamente.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        // Log para verificar o ID do usuário
+        Log.d("AddPet", "ID do usuário recuperado: $userId")
+
+        val pet = Pet(
+            nome = nome,
+            nascimento = nascimento,
+            tipo = tipoPet,
+            sexo = sexo,
+            user_id = userId
+        )
+
+        lifecycleScope.launch {
+            val result = repository.cadastrarPet(userId.toLong(), pet)
+            result.onSuccess {
+                Toast.makeText(this@AddPet, "Pet cadastrado com sucesso!", Toast.LENGTH_SHORT)
+                    .show()
+
+                // Redireciona para adicionarPet após o sucesso
+                val intent = Intent(this@AddPet, adicionarPet::class.java)
+                startActivity(intent)
+                finish() // Finaliza AddPet para evitar sobreposição de telas
+            }.onFailure {
+                Toast.makeText(
+                    this@AddPet,
+                    "Erro ao cadastrar pet: ${it.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
 }
