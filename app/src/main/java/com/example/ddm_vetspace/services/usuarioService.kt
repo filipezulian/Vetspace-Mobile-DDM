@@ -1,4 +1,4 @@
-package com.example.ddm_vetspace.interfaces
+package com.example.ddm_vetspace.repository
 
 import com.example.ddm_vetspace.dto.LoginRequest
 import com.example.ddm_vetspace.model.Usuario
