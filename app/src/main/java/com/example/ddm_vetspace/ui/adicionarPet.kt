@@ -16,15 +16,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ddm_vetspace.R
+import com.example.ddm_vetspace.database.App
 import com.example.ddm_vetspace.dto.PetResponse
+import com.example.ddm_vetspace.model.Pet
 import com.example.ddm_vetspace.viewmodel.PetViewModel
 import com.example.ddm_vetspace.viewmodel.PetViewModelFactory
 
 class adicionarPet : AppCompatActivity() {
 
-    private val petViewModel: PetViewModel by viewModels { PetViewModelFactory() } // Assuming you have a ViewModelFactory
     private lateinit var petAdapter: PetAdapter
     private lateinit var addPetLauncher: ActivityResultLauncher<Intent>
+
+    // Inicializa o PetViewModel com o DatabaseHelper
+    private val petViewModel: PetViewModel by viewModels {
+        val databaseHelper = (application as App).databaseHelper
+        PetViewModelFactory(databaseHelper)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +51,8 @@ class adicionarPet : AppCompatActivity() {
         }
 
         val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getInt("user_id", -1).toLong()
-        if (userId != -1L) {
+        val userId = sharedPreferences.getInt("user_id", -1)
+        if (userId != -1) {
             petViewModel.loadPetsByUserId(userId)
         } else {
             Toast.makeText(this, "Usuário não encontrado. Faça login novamente.", Toast.LENGTH_SHORT).show()
@@ -73,7 +80,7 @@ class adicionarPet : AppCompatActivity() {
 
 
 
-class PetAdapter(private var pets: List<PetResponse>) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
+class PetAdapter(private var pets: List<Pet>) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pet, parent, false)
@@ -87,15 +94,15 @@ class PetAdapter(private var pets: List<PetResponse>) : RecyclerView.Adapter<Pet
 
     override fun getItemCount(): Int = pets.size
 
-    fun updatePets(newPets: List<PetResponse>) {
+    fun updatePets(newPets: List<Pet>) {
         pets = newPets
         notifyDataSetChanged()
     }
 
-    fun addPet(pet: PetResponse) {
-        pets = pets + pet // Adiciona o novo pet à lista existente
-        notifyDataSetChanged()
-    }
+//    fun addPet(pet: Pet) {
+//        pets = pets + pet
+//        notifyDataSetChanged()
+//    }
 
     class PetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewPetName: TextView = itemView.findViewById(R.id.textViewPetName)

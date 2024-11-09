@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 
 class PetViewModel(private val repository: PetRepository) : ViewModel() {
 
-    private val _pets = MutableLiveData<List<PetResponse>>()
-    val pets: LiveData<List<PetResponse>> get() = _pets
+    private val _pets = MutableLiveData<List<Pet>>()
+    val pets: LiveData<List<Pet>> get() = _pets
 
     private val _addPetStatus = MutableLiveData<Result<Unit>>()
     val addPetStatus: LiveData<Result<Unit>> get() = _addPetStatus
@@ -20,9 +20,9 @@ class PetViewModel(private val repository: PetRepository) : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
-    fun loadPetsByUserId(userId: Long) {
+    fun loadPetsByUserId(userId: Int) {
         viewModelScope.launch {
-            val result = repository.buscarPetsPorUsuarioId(userId)
+            val result = repository.buscarPetsPorUsuario(userId)
             result.onSuccess {
                 _pets.value = it
             }.onFailure {

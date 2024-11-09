@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.ddm_vetspace.R
+import com.example.ddm_vetspace.database.App
 import com.example.ddm_vetspace.model.Pet
 import com.example.ddm_vetspace.repository.PetRepository
 import com.example.ddm_vetspace.retrofit.RetrofitInitializer
@@ -38,7 +39,12 @@ class AddPet : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        repository = PetRepository(RetrofitInitializer.petApi)
+        val databaseHelper = (application as App).databaseHelper
+        repository = PetRepository(RetrofitInitializer.petApi, databaseHelper)
+
+        listarPets()
+
+        //repository = PetRepository(RetrofitInitializer.petApi)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pet)
@@ -238,6 +244,25 @@ class AddPet : AppCompatActivity() {
                     "Erro ao cadastrar pet: ${it.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        }
+    }
+
+    private fun listarPets() {
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("user_id", -1)
+
+        if (userId == -1) {
+            Toast.makeText(this, "Usuário não encontrado. Faça login novamente.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            val result = repository.buscarPetsPorUsuario(userId)
+            result.onSuccess { pets ->
+                // Atualizar a UI com a lista de pets
+            }.onFailure {
+                Toast.makeText(this@AddPet, "Erro ao buscar pets", Toast.LENGTH_SHORT).show()
             }
         }
     }

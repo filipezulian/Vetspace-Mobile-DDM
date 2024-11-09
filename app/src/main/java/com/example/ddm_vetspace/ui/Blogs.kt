@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ddm_vetspace.R
+import com.example.ddm_vetspace.database.App
 import com.example.ddm_vetspace.model.Blog
 import com.example.ddm_vetspace.repository.BlogRepository
 import com.example.ddm_vetspace.retrofit.RetrofitInitializer
@@ -23,7 +24,8 @@ import com.example.ddm_vetspace.viewmodel.BlogViewModelFactory
 class Blogs : AppCompatActivity() {
 
     private val blogViewModel: BlogViewModel by viewModels {
-        BlogViewModelFactory(BlogRepository(RetrofitInitializer.blogApi))
+        val databaseHelper = (application as App).databaseHelper
+        BlogViewModelFactory(databaseHelper)
     }
     private lateinit var blogAdapter: BlogAdapter
 

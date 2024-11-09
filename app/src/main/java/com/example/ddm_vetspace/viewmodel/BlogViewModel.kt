@@ -19,10 +19,10 @@ class BlogViewModel(private val blogRepository: BlogRepository) : ViewModel() {
     fun loadBlogs() {
         viewModelScope.launch {
             val result = blogRepository.getBlogs()
-            result.onSuccess { blogList ->
-                _blogs.value = blogList
-            }.onFailure { exception ->
-                _error.value = "Erro ao carregar blogs: ${exception.message}"
+            result.onSuccess {
+                _blogs.value = it
+            }.onFailure {
+                _error.value = it.message ?: "Erro ao carregar blogs"
             }
         }
     }
