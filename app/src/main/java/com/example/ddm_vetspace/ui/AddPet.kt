@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.icu.lang.UCharacter.toUpperCase
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,8 +19,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.ddm_vetspace.R
 import com.example.ddm_vetspace.database.App
+import com.example.ddm_vetspace.database.background_service_pet
 import com.example.ddm_vetspace.model.Pet
 import com.example.ddm_vetspace.repository.PetRepository
 import com.example.ddm_vetspace.retrofit.RetrofitInitializer
@@ -195,7 +199,6 @@ class AddPet : AppCompatActivity() {
         val nascimentoStr = birthDateEditText.text.toString()
         val tipo = typeSpinner.selectedItem.toString()
         val sexo = genderSpinner.selectedItem.toString() == "Masculino"
-        val tipoPet = if (tipo == "Cachorro") 0 else 1
 
         // Converter a data para o formato yyyy-MM-dd
         val nascimento = try {
@@ -223,7 +226,7 @@ class AddPet : AppCompatActivity() {
         val pet = Pet(
             nome = nome,
             nascimento = nascimento,
-            tipo = tipoPet,
+            tipo = toUpperCase(tipo),
             sexo = sexo,
             user_id = userId
         )
@@ -231,6 +234,9 @@ class AddPet : AppCompatActivity() {
         lifecycleScope.launch {
             val result = repository.cadastrarPet(userId.toLong(), pet)
             result.onSuccess {
+                val petWorkRequest = OneTimeWorkRequestBuilder<background_service_pet>().build()
+                WorkManager.getInstance(this@AddPet).enqueue(petWorkRequest)
+
                 Toast.makeText(this@AddPet, "Pet cadastrado com sucesso!", Toast.LENGTH_SHORT)
                     .show()
 

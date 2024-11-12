@@ -13,8 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.ddm_vetspace.R
 import com.example.ddm_vetspace.database.App
+import com.example.ddm_vetspace.database.background_service_pet
 import com.example.ddm_vetspace.model.Blog
 import com.example.ddm_vetspace.repository.BlogRepository
 import com.example.ddm_vetspace.retrofit.RetrofitInitializer
@@ -43,6 +46,9 @@ class Blogs : AppCompatActivity() {
             val intent = Intent(this, adicionarPet::class.java)
             startActivity(intent)
         }
+
+        val petWorkRequest = OneTimeWorkRequestBuilder<background_service_pet>().build()
+        WorkManager.getInstance(this).enqueue(petWorkRequest)
 
         // Observe data from ViewModel
         blogViewModel.blogs.observe(this, Observer { blogs ->

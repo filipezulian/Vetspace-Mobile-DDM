@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class Pet(
     @SerializedName("id")
     val pet_id: Int = 0,
-    val tipo: Int? = null,
+    val tipo: String? = null,
     val sexo: Boolean? = null,
     val nome: String,
     val nascimento: String? = null,

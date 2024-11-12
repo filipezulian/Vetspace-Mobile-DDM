@@ -1,17 +1,18 @@
 package com.example.ddm_vetspace.ui
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.ddm_vetspace.R
 import com.example.ddm_vetspace.database.App
-import com.example.ddm_vetspace.database.DatabaseHelper
+import com.example.ddm_vetspace.database.background_service_blog
+import com.example.ddm_vetspace.database.background_service_pet
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +31,9 @@ class MainActivity : AppCompatActivity() {
 
         val loginButton = findViewById<Button>(R.id.loginButton)
         loginButton.setOnClickListener {
+            val blogWorkRequest = OneTimeWorkRequestBuilder<background_service_blog>().build()
+            WorkManager.getInstance(this).enqueue(blogWorkRequest)
+
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }

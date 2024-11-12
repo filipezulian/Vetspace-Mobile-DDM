@@ -15,9 +15,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.ddm_vetspace.R
 import com.example.ddm_vetspace.database.App
-import com.example.ddm_vetspace.dto.PetResponse
+import com.example.ddm_vetspace.database.background_service_blog
 import com.example.ddm_vetspace.model.Pet
 import com.example.ddm_vetspace.viewmodel.PetViewModel
 import com.example.ddm_vetspace.viewmodel.PetViewModelFactory
@@ -35,7 +37,7 @@ class adicionarPet : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_adicionar_pet)
+        setContentView(R.layout.activity_listar_pet)
 
         val recyclerViewPets = findViewById<RecyclerView>(R.id.recyclerViewPets)
         recyclerViewPets.layoutManager = LinearLayoutManager(this)
@@ -66,6 +68,9 @@ class adicionarPet : AppCompatActivity() {
 
         val blogsButton = findViewById<ImageView>(R.id.buttonMenu)
         blogsButton.setOnClickListener {
+            val workRequest = OneTimeWorkRequestBuilder<background_service_blog>().build()
+            WorkManager.getInstance(this).enqueue(workRequest)
+
             val intent = Intent(this, Blogs::class.java)
             addPetLauncher.launch(intent)
         }

@@ -1,5 +1,7 @@
 package com.example.ddm_vetspace.repository
 
+import android.content.ContentValues
+import android.content.Context
 import com.example.ddm_vetspace.database.DatabaseHelper
 import com.example.ddm_vetspace.dto.PetResponse
 import com.example.ddm_vetspace.services.petService
@@ -57,7 +59,7 @@ class PetRepository (private val petApi: petService, private val dbHelper: Datab
             while (cursor.moveToNext()) {
                 val pet = Pet(
                     pet_id = cursor.getInt(cursor.getColumnIndexOrThrow("pet_id")),
-                    tipo = cursor.getInt(cursor.getColumnIndexOrThrow("tipo")),
+                    tipo = cursor.getString(cursor.getColumnIndexOrThrow("tipo")),
                     sexo = cursor.getInt(cursor.getColumnIndexOrThrow("sexo")) == 1,
                     nome = cursor.getString(cursor.getColumnIndexOrThrow("nome")),
                     nascimento = cursor.getString(cursor.getColumnIndexOrThrow("nascimento")),
@@ -69,6 +71,22 @@ class PetRepository (private val petApi: petService, private val dbHelper: Datab
             db.close()
 
             Result.success(pets)
+        }
+    }
+
+    suspend fun inserirPet(pet: Pet, userId: Int) {
+        withContext(Dispatchers.IO) {
+            val db = dbHelper.writableDatabase
+            val values = ContentValues().apply {
+                put("pet_id", pet.pet_id)
+                put("tipo", pet.tipo)
+                put("sexo", if (pet.sexo == true) 1 else 0)
+                put("nome", pet.nome)
+                put("nascimento", pet.nascimento)
+                put("user_id", userId)
+            }
+            db.insert("pet", null, values)
+            db.close()
         }
     }
 }

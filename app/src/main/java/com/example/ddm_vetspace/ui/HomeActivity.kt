@@ -5,11 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.ddm_vetspace.R
+import com.example.ddm_vetspace.database.background_service_pet
 import com.example.ddm_vetspace.viewmodel.UsuarioViewModel
 import com.example.ddm_vetspace.viewmodel.UsuarioViewModelFactory
 
@@ -33,11 +37,19 @@ class HomeActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show()
             }
+
+        val cadastroText = findViewById<TextView>(R.id.registerText)
+        cadastroText.setOnClickListener {
+            val intent = Intent(this, Cadastro::class.java)
+            startActivity(intent)
         }
+    }
 
         usuarioViewModel.loginResult.observe(this, Observer { result ->
             result.onSuccess { usuario ->
                 saveUserId(usuario.user_id)
+                val petWorkRequest = OneTimeWorkRequestBuilder<background_service_pet>().build()
+                WorkManager.getInstance(this).enqueue(petWorkRequest)
                 Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, Blogs::class.java))
                 finish()
